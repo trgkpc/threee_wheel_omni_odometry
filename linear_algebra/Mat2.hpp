@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+
 #include "Vec2.hpp"
 
 namespace linear {
@@ -12,6 +14,11 @@ struct Mat2 {
   Mat2(const Vec2<T>& x, const Vec2<T>& y) : x(x), y(y) {}
   Mat2(T a11, T a12, T a21, T a22) : x(a11, a12), y(a21, a22) {}
 
+  Mat2 transpose() const {
+    return Mat2{.x = Vec2<T>{.x = this->x.x, .y = this->y.x},
+                .y = Vec2<T>{.x = this->x.y, .y = this->y.y}};
+  }
+
   T norm() { return std::sqrt(x * x + y * y); }
 
   Mat2 operator+(const Mat2<T>& other) const {
@@ -22,12 +29,14 @@ struct Mat2 {
     return Mat2{.x = this->x - other.x, .y = this->y - other.y};
   }
 
-  T operator*(const Mat2<T>& other) const {
-    return this->x * other.x + this->y * other.y;
-  }
-
   Vec2<T> operator*(const Vec2<T>& other) const {
     return {.x = this->x * other, .y = this->y * other};
+  }
+
+  Mat2 operator*(const Mat2<T>& other) const {
+    Mat2<T> other_T = other.transpose();
+    Mat2<T> ans_T = {.x = (*this) * other_T.x, .y = (*this) * other_T.y};
+    return ans_T.transpose();
   }
 
   Mat2 operator*(const T& ratio) const {
@@ -36,6 +45,10 @@ struct Mat2 {
 
   Mat2 operator/(const T& ratio) const {
     return Mat2{.x = this->x / ratio, .y = this->y / ratio};
+  }
+
+  std::array<T, 4> write_down() const {
+    return std::array<T, 4>{this->x.x, this->x.y, this->y.x, this->y.y};
   }
 };
 
