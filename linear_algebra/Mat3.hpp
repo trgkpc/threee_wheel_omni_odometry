@@ -10,8 +10,11 @@ struct Mat3 {
   Vec2<T> y;
   Vec2<T> z;
 
-  Mat3() : x(0), y(0), z(0) {}
-  Mat3(T x, T y, T z) : x(x), y(y), z(z) {}
+  Mat3() : x(), y(), z() {}
+  Mat3(const Vec3<T>& x, const Vec3<T>& y, const Vec3<T>& z)
+      : x(x), y(y), z(z) {}
+  Mat3(T a11, T a12, T a13, T a21, T a22, T a23, T a31, T a32, T a33)
+      : x(a11, a12, a13), y(a21, a22, a23), z(a31, a32, a33) {}
 
   T norm() { return std::sqrt(x * x + y * y + z * z); }
 
